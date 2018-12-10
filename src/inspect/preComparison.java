@@ -42,10 +42,14 @@ public class preComparison {
 		Map<String, LinkedList<String>> cardIDMap = new HashMap<>();
 
 		int etcCarNum = 0;
-
+		//int count = 0;
+		
 		for (int i = 0; i < list.size(); i++) {
 			// 依次处理每一个文件
 			String pathIn = path + "/" + list.get(i);
+			
+			//count++;
+			//if(count < 124) continue;
 			
 			try {
 				InputStreamReader inStream = new InputStreamReader(new FileInputStream(pathIn), "UTF-8");
