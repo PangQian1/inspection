@@ -167,17 +167,15 @@ public class preComparison {
 							
 							if (cardIDMap.containsKey(cardId)) {
 								LinkedList<String> listTrace = cardIDMap.get(cardId);
-								listTrace.add(line);
+								listTrace.add(data[j]);
 								cardIDMap.put(cardId, listTrace);
 							} else {
 								LinkedList<String> listTrace = new LinkedList<>();
-								listTrace.add(line);
+								listTrace.add(data[j]);
 								cardIDMap.put(cardId, listTrace);
 
 								etcCarNum++;
 							}
-							
-							break;
 						}
 					}
 				}
@@ -187,9 +185,10 @@ public class preComparison {
 			}
 			
 			System.out.println(pathIn + " read finish!");
-			String outPath = out + "_00" + i + ".csv";
+			String outPath = out + "_00" + (i+1) + ".csv";
 			writePreExData(outPath, cardIDMap);
-			System.out.println("第" + i + "部分共找到" + etcCarNum + "张etc卡存在单条数据不一致情况。");
+			System.out.println("第" + (i+1) + "部分共找到" + etcCarNum + "张etc卡存在单条数据不一致情况。");
+			cardIDMap = new HashMap<>();
 			etcCarNum = 0;
 		}
 		
