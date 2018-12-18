@@ -57,6 +57,11 @@ public class CompareMulData {
 						String enVehType = trace[7];// 入口收费车型
 						String exVehType = trace[8];// 出口收费车型
 						
+						if((enVehType!=null && Integer.valueOf(enVehType) > 4) || (exVehType!=null && Integer.valueOf(exVehType) > 4)){
+							break;
+						}
+						
+						
 						//比对出口车型不一致情况
 						if(!exTypeFlag && !exVehType.equals("null")){
 							exTypeFlag = true;

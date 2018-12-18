@@ -51,6 +51,10 @@ public class ComparePerData {
 					String enVehType = data[7];// 入口收费车型
 					String exVehType = data[8];// 出口收费车型
 
+					if((enVehType!=null && Integer.valueOf(enVehType) > 4) || (exVehType!=null && Integer.valueOf(exVehType) > 4)){
+						break;
+					}					
+					
 					// 比较入口收费车型和出口收费车型
 					if (!enVehType.equals(exVehType)) {
 						if (VehicleTypeMap.containsKey(cardId)) {
