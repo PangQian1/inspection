@@ -38,6 +38,9 @@ public class CompareMulData {
 				
 				String line = "";
 				String[] data;
+				String exIdSub = "";
+				String exVehIdSub = "";
+				
 				while ((line = reader.readLine()) != null) {
 					data = line.split("\\|");
 					
@@ -86,26 +89,31 @@ public class CompareMulData {
 						
 						
 						//比对出口实际车牌不一致情况
-						if(!exIdFlag && !(exVehId.equals("null") || exVehId.length()<9 || exVehId.substring(2, 7).equals("00000"))){
+						if(!exIdFlag && exVehId.length()==9 && !exVehId.substring(2, 7).equals("00000")){
 							exIdFlag = true;
 							exId = exVehId;
 						}
 						
-						if(exIdFlag && f2 && !exVehId.equals("null") && textSimilar.xiangsidu(exId, exVehId)<0.8){
-							if (exIdMap.containsKey(cardId)) {
-								LinkedList<String> listTrace = exIdMap.get(cardId);
-								listTrace.add(line);
-								exIdMap.put(cardId, listTrace);
-							} else {
-								LinkedList<String> listTrace = new LinkedList<>();
-								listTrace.add(line);
-								exIdMap.put(cardId, listTrace);
+						if(exIdFlag && f2 && exVehId.length()==9 && !exVehId.substring(2, 7).equals("00000")){
+							
+							exIdSub = exId.substring(0, 7);
+							exVehIdSub = exVehId.substring(0, 7);
+							
+							if(textSimilar.xiangsidu(exIdSub, exVehIdSub)<0.8){
+								if (exIdMap.containsKey(cardId)) {
+									LinkedList<String> listTrace = exIdMap.get(cardId);
+									listTrace.add(line);
+									exIdMap.put(cardId, listTrace);
+								} else {
+									LinkedList<String> listTrace = new LinkedList<>();
+									listTrace.add(line);
+									exIdMap.put(cardId, listTrace);
 
-								exIdNum++;
+									exIdNum++;
+								}
+								f2 = false;
 							}
-							f2 = false;
 						}
-						
 						
 					}
 				}

@@ -39,6 +39,10 @@ public class ComparePerData {
 
 			String line = "";
 			String[] lineArray;
+			String exVehIdSub = "";
+			String enVehIdSub = "";
+			String idenVehIdSub = "";
+			
 			while ((line = reader.readLine()) != null) {
 				lineArray = line.split("\\|");
 				for (String item : lineArray) {
@@ -77,7 +81,11 @@ public class ComparePerData {
 					// 入口实际收费车牌，出口实际收费车牌
 					if (!enVehId.equals("null") && enVehId.length() > 8 && !enVehId.substring(2, 7).equals("00000")) {
 						// 排除 NULL 默认车牌
-						if (textSimilar.xiangsidu(enVehId, exVehId)<0.8) {
+						
+						enVehIdSub = enVehId.substring(0, 7);
+						exVehIdSub = exVehId.substring(0, 7);
+						
+						if (textSimilar.xiangsidu(enVehIdSub, exVehIdSub)<0.8) {
 							if (EnExIDMap.containsKey(cardId)) {
 								LinkedList<String> listTrace = EnExIDMap.get(cardId);
 								listTrace.add(item);
@@ -94,7 +102,11 @@ public class ComparePerData {
 					// 出口实际收费车牌，出口识别收费车牌
 					if (!idenVehId.equals("null") && idenVehId.length() > 8 && !idenVehId.substring(2, 7).equals("00000")) {
 						// 排除 NULL 默认车牌
-						if (textSimilar.xiangsidu(exVehId,idenVehId)<0.8) {
+						
+						exVehIdSub = exVehId.substring(0, 7);
+						idenVehIdSub = idenVehId.substring(0, 7);
+						
+						if (textSimilar.xiangsidu(exVehIdSub,idenVehIdSub)<0.8) {
 							if (ExIdenIDMap.containsKey(cardId)) {
 								LinkedList<String> listTrace = ExIdenIDMap.get(cardId);
 								listTrace.add(item);

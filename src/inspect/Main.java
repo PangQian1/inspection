@@ -59,9 +59,9 @@ public class Main {
 	public static void main(String[] args) {
 		
 		String a = "ิมD96932_9";
-		String b = "ิมD9693_9_";
+		String b = "ิมD90876_9";
 
-		System.out.println(xiangsidu(a, b));
+		System.out.println(a.substring(0,7));
 	}
 
 }
