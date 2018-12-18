@@ -9,20 +9,24 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import dao.textSimilar;
 
 public class CompareMulData {
 	
 	public static String dataPath = "/home/pq/inspect/intermediateData/sumDataBySever";
 
 	public static String exVehTypeMulPath = "/home/pq/inspect/intermediateData/comMulData/exVehTypeMulRes.csv";
+	public static String exVehIdMulPath = "/home/pq/inspect/intermediateData/comMulData/exVehIdMulRes.csv";
 	
-	public static void compareMulData(String path, String out) {
+	public static void compareMulData(String path) {
 
 		File file = new File(path);
 		List<String> list = Arrays.asList(file.list());
-		Map<String, LinkedList<String>> cardIDMap = new HashMap<>();
+		Map<String, LinkedList<String>> exTypeMap = new HashMap<>();
+		Map<String, LinkedList<String>> exIdMap = new HashMap<>();
 
 		int exTypeNum = 0;
+		int exIdNum = 0;
 		
 		for (int i = 0; i < list.size(); i++) {
 			// 依次处理每一个文件
@@ -35,20 +39,23 @@ public class CompareMulData {
 				String line = "";
 				String[] data;
 				while ((line = reader.readLine()) != null) {
-					data = line.split("|");
+					data = line.split("\\|");
 					
+					boolean f1 = true;
 					boolean exTypeFlag = false;
 					String exType = "-1";
+					boolean f2 = true;
+					boolean exIdFlag = false;
+					String exId = "-1";
 					
 					for(int j=0; j<data.length; j++){
 						String[] trace = data[j].split(",", 10);
-
-						String cardId = data[1];// 用户卡编号
-						String enVehId = data[4];// 入口实际收费车牌号码
-						String exVehId = data[5];// 出口实际收费车牌号码
-						String idenVehId = data[6];// 出口识别收费车牌号码
-						String enVehType = data[7];// 入口收费车型
-						String exVehType = data[8];// 出口收费车型
+						String cardId = trace[1];// 用户卡编号
+						String enVehId = trace[4];// 入口实际收费车牌号码
+						String exVehId = trace[5];// 出口实际收费车牌号码
+						String idenVehId = trace[6];// 出口识别收费车牌号码
+						String enVehType = trace[7];// 入口收费车型
+						String exVehType = trace[8];// 出口收费车型
 						
 						//比对出口车型不一致情况
 						if(!exTypeFlag && !exVehType.equals("null")){
@@ -57,22 +64,44 @@ public class CompareMulData {
 						}
 							
 
-						if (exTypeFlag && !exType.equals(exVehType)) {
-							if (cardIDMap.containsKey(cardId)) {
-								LinkedList<String> listTrace = cardIDMap.get(cardId);
+						if (exTypeFlag && f1 && !exVehType.equals("null") && !exType.equals(exVehType)) {
+							if (exTypeMap.containsKey(cardId)) {
+								LinkedList<String> listTrace = exTypeMap.get(cardId);
 								listTrace.add(line);
-								cardIDMap.put(cardId, listTrace);
+								exTypeMap.put(cardId, listTrace);
 							} else {
 								LinkedList<String> listTrace = new LinkedList<>();
 								listTrace.add(line);
-								cardIDMap.put(cardId, listTrace);
+								exTypeMap.put(cardId, listTrace);
 
 								exTypeNum++;
 							}
+							f1 = false;
 						}
 						
 						
-						//比对出口实际车脾不一致情况
+						//比对出口实际车牌不一致情况
+						if(!exIdFlag && !(exVehId.equals("null") || exVehId.length()<9 || exVehId.substring(2, 7).equals("00000"))){
+							exIdFlag = true;
+							exId = exVehId;
+						}
+						
+						if(exIdFlag && f2 && !exVehId.equals("null") && textSimilar.xiangsidu(exId, exVehId)<0.8){
+							if (exIdMap.containsKey(cardId)) {
+								LinkedList<String> listTrace = exIdMap.get(cardId);
+								listTrace.add(line);
+								exIdMap.put(cardId, listTrace);
+							} else {
+								LinkedList<String> listTrace = new LinkedList<>();
+								listTrace.add(line);
+								exIdMap.put(cardId, listTrace);
+
+								exIdNum++;
+							}
+							f2 = false;
+						}
+						
+						
 					}
 				}
 				reader.close();
@@ -80,30 +109,19 @@ public class CompareMulData {
 				e.printStackTrace();
 			}
 			System.out.println(pathIn + " read finish!");
-			
-			/*int index = pathIn.indexOf("success");
-			if(pathIn.substring(index-3,index-1).equals("31")){
-				
-				String sub = pathIn.substring(index + 7, index + 11);
-				String outPath = out + "/2018-08" + sub + ".csv";
-				preComparison.writePreExData(outPath, cardIDMap);
-				
-				cardIDMap = new HashMap<>();
-				System.out.println(sub.substring(1) + "部分共找到" + etcCarNum + "张etc卡。");
-				etcCarNum = 0;
-			}*/
 		}
 		
-		
-		ComparePerData.writeData(out, cardIDMap);
-		
+		System.out.println("出口车型不一致情况共找到" + exTypeNum + "张etc卡。");
+		System.out.println("出口实际车牌不一致情况共找到" + exIdNum + "张etc卡。");
+		ComparePerData.writeData(exVehTypeMulPath, exTypeMap);
+		ComparePerData.writeData(exVehIdMulPath, exIdMap);
 	}
 	
 	
 	
 	public static void main(String[] args) {
 		
-		compareMulData(dataPath, exVehTypeMulPath);
+		compareMulData(dataPath);
 		System.out.println("end");
 	}
 

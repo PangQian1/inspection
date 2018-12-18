@@ -9,6 +9,7 @@ import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import dao.textSimilar;
 
 public class ComparePerData {
 
@@ -72,7 +73,7 @@ public class ComparePerData {
 					// 入口实际收费车牌，出口实际收费车牌
 					if (!enVehId.equals("null") && enVehId.length() > 8 && !enVehId.substring(2, 7).equals("00000")) {
 						// 排除 NULL 默认车牌
-						if (!enVehId.equals(exVehId)) {
+						if (textSimilar.xiangsidu(enVehId, exVehId)<0.8) {
 							if (EnExIDMap.containsKey(cardId)) {
 								LinkedList<String> listTrace = EnExIDMap.get(cardId);
 								listTrace.add(item);
@@ -89,7 +90,7 @@ public class ComparePerData {
 					// 出口实际收费车牌，出口识别收费车牌
 					if (!idenVehId.equals("null") && idenVehId.length() > 8 && !idenVehId.substring(2, 7).equals("00000")) {
 						// 排除 NULL 默认车牌
-						if (!exVehId.equals(idenVehId)) {
+						if (textSimilar.xiangsidu(exVehId,idenVehId)<0.8) {
 							if (ExIdenIDMap.containsKey(cardId)) {
 								LinkedList<String> listTrace = ExIdenIDMap.get(cardId);
 								listTrace.add(item);
