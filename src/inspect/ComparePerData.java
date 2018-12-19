@@ -65,7 +65,7 @@ public class ComparePerData {
 					}					
 					
 					// 比较入口收费车型和出口收费车型
-					if (!enVehType.equals(exVehType)) {
+					if (!enVehType.equals(exVehType) && !enVehType.equals("0") && !exVehType.equals("0")) {
 						if (VehicleTypeMap.containsKey(cardId)) {
 							LinkedList<String> listTrace = VehicleTypeMap.get(cardId);
 							listTrace.add(item);

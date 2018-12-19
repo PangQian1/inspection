@@ -70,13 +70,13 @@ public class CompareMulData {
 						}
 						
 						//比对出口车型不一致情况
-						if(!exTypeFlag && !exVehType.equals("null")){
+						if(!exTypeFlag && !exVehType.equals("null") && !exVehType.equals("0")){
 							exTypeFlag = true;
 							exType = exVehType;
 						}
 							
 
-						if (exTypeFlag && f1 && !exVehType.equals("null") && !exType.equals(exVehType)) {
+						if (exTypeFlag && f1 && !exVehType.equals("null") && !exType.equals(exVehType) && !exVehType.equals("0")) {
 							if (exTypeMap.containsKey(cardId)) {
 								LinkedList<String> listTrace = exTypeMap.get(cardId);
 								listTrace.add(line);
