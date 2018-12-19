@@ -56,6 +56,10 @@ public class ComparePerData {
 					String enVehType = data[7];// 入口收费车型
 					String exVehType = data[8];// 出口收费车型
 
+					if(enVehType.length()>4 || exVehType.length()>4){
+						break;
+					}
+					
 					if((enVehType!=null && Integer.valueOf(enVehType) > 4) || (exVehType!=null && Integer.valueOf(exVehType) > 4)){
 						break;
 					}					

@@ -15,9 +15,9 @@ public class test {
 		 }
 	
 	public static void main(String[] args) {
-		String a = "1";
+		String a = "null";
 		String b = "ÔÁD96932_u";
-		
+		System.out.println(a.length()>4);
 		System.out.println(isLetterDigitOrChinese(b.substring(0, 8)));
 	}
 

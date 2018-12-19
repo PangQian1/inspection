@@ -75,8 +75,13 @@ public class preComparison {
 					String enVehType = data[14];// 入口收费车型
 					String exVehType = data[15];// 出口收费车型
 					String payType = data[25];// 支付类型
+					
+					if(enVehType.length()>4 || exVehType.length()>4){
+						continue;
+					}
 
-					if (type.equals("1") && ((enVehType!=null && Integer.valueOf(enVehType) < 5) || (exVehType!=null && Integer.valueOf(exVehType) < 5))) {
+					if (type.equals("1") && ((enVehType!=null && Integer.valueOf(enVehType) < 5 && Integer.valueOf(enVehType) != 0) || 
+							(exVehType!=null && Integer.valueOf(exVehType) < 5) && Integer.valueOf(exVehType) != 0)) {
 						if (cardIDMap.containsKey(cardId)) {
 							LinkedList<String> listTrace = cardIDMap.get(cardId);
 							listTrace.add(id + ","+ cardId +"," + fee + "," + OBUId + "," + enVehId + "," + exVehId + "," + idenVehId
@@ -235,7 +240,7 @@ public class preComparison {
 		
 		String outPath = out + "/comPerDataExcNull_2018-08.csv";
 		writePreExData(outPath, cardIDMap);
-		System.out.println("共找到" + etcCarNum + "张etc卡存在单条数据不一致情况。");
+		System.out.println("共找到" + etcCarNum + "张etc卡存在单条数据不一致情况。(排除空值)");
 		
 	}
 	
@@ -263,7 +268,7 @@ public class preComparison {
 		
 	}
 	
-	public static void count(String in, String out){
+	public static void count(String in){
 		
 		Map<String, String> countMap = new HashMap<>();
 		File file = new File(in);
@@ -303,7 +308,7 @@ public class preComparison {
 		
 		System.out.println("共找到" + etcCarNum + "条数据");
 		
-		//String outPath = out + "/2018-08.csv";
+	/*	//String outPath = out + "/2018-08.csv";
 		String outPath = out + "/comPerData_2018-08.csv";
 		
 		try {
@@ -317,18 +322,18 @@ public class preComparison {
 			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 		
 	}
 
 	public static void main(String[] args) {
 
-		//preProcess(oriExData, preProExData);
-		//preFilter(preProExData, prefiltExData);
-		//preFilterExcNull(prefiltExData, prefiltExDataExcNull);
+		preProcess(oriExData, preProExData);
+		preFilter(preProExData, prefiltExData);
+		preFilterExcNull(prefiltExData, prefiltExDataExcNull);
 		
-		//count(preProExData, preProExData);
-		count(prefiltExData, prefiltExData);
+		count(preProExData);
+		//count(prefiltExData);
 		
 		System.out.println("end");
 	}
