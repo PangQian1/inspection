@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import dao.textSimilar;
+import dao.regularExpression;
 
 public class ComparePerData {
 
@@ -74,12 +75,14 @@ public class ComparePerData {
 					}
 
 					// 出口实际收费车牌情况判断
-					if (exVehId.equals("null") || exVehId.length() < 9 || exVehId.substring(2, 7).equals("00000")) { 
+					if (exVehId.equals("null") || exVehId.length() < 9 || exVehId.substring(2, 7).equals("00000") || 
+							!regularExpression.isLetterDigitOrChinese(exVehId.substring(0, 7))) { 
 						continue;
 					}
 					
 					// 入口实际收费车牌，出口实际收费车牌
-					if (!enVehId.equals("null") && enVehId.length() > 8 && !enVehId.substring(2, 7).equals("00000")) {
+					if (!enVehId.equals("null") && enVehId.length() > 8 && !enVehId.substring(2, 7).equals("00000") && 
+							regularExpression.isLetterDigitOrChinese(enVehId.substring(0, 7))) {
 						// 排除 NULL 默认车牌
 						
 						enVehIdSub = enVehId.substring(0, 7);
@@ -100,7 +103,8 @@ public class ComparePerData {
 					}
 
 					// 出口实际收费车牌，出口识别收费车牌
-					if (!idenVehId.equals("null") && idenVehId.length() > 8 && !idenVehId.substring(2, 7).equals("00000")) {
+					if (!idenVehId.equals("null") && idenVehId.length() > 8 && !idenVehId.substring(2, 7).equals("00000") && 
+							regularExpression.isLetterDigitOrChinese(idenVehId.substring(0, 7))) {
 						// 排除 NULL 默认车牌
 						
 						exVehIdSub = exVehId.substring(0, 7);

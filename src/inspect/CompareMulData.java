@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import dao.textSimilar;
+import dao.regularExpression;
 
 public class CompareMulData {
 	
@@ -89,12 +90,14 @@ public class CompareMulData {
 						
 						
 						//比对出口实际车牌不一致情况
-						if(!exIdFlag && exVehId.length()==9 && !exVehId.substring(2, 7).equals("00000")){
+						if(!exIdFlag && exVehId.length()==9 && !exVehId.substring(2, 7).equals("00000") &&
+								regularExpression.isLetterDigitOrChinese(exVehId.substring(0, 7))){
 							exIdFlag = true;
 							exId = exVehId;
 						}
 						
-						if(exIdFlag && f2 && exVehId.length()==9 && !exVehId.substring(2, 7).equals("00000")){
+						if(exIdFlag && f2 && exVehId.length()==9 && !exVehId.substring(2, 7).equals("00000") && 
+								regularExpression.isLetterDigitOrChinese(exVehId.substring(0, 7))){
 							
 							exIdSub = exId.substring(0, 7);
 							exVehIdSub = exVehId.substring(0, 7);
