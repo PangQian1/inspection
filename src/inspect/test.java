@@ -1,9 +1,15 @@
 package inspect;
 
 import java.io.BufferedWriter;
+import java.sql.DatabaseMetaData;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
+import javax.swing.text.TabableView;
 
 import dao.io;
 
@@ -15,10 +21,20 @@ public class test {
 		 }
 	
 	public static void main(String[] args) {
-		String a = "À’WD4956_0";
-		String b = "‘¡D96932_u";
-		System.out.println(a.substring(0, 2));
-		System.out.println(isLetterDigitOrChinese(b.substring(0, 8)));
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		String time = "2018-01-01T11:01:26";
+		String statusChangeTime = time.substring(0, 10) + " " + time.substring(11);
+		System.out.println(statusChangeTime);
+	
+		String t1 = "2018-01-01 11:03:56";
+		try {
+			Date t2 = sdf.parse(statusChangeTime);
+			Date t3 = sdf.parse(t1);
+			System.out.println(t2.after(t3));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
