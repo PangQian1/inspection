@@ -14,16 +14,13 @@ import dao.regularExpression;
 
 public class ComparePerData {
 
-	public static String dataPath = "/home/pq/inspect/intermediateData/comPerDataExcNull/comPerDataExcNull_2018-08.csv";
-
-	public static String EnExIDPath = "/home/pq/inspect/intermediateData/comPerDataClass/EnExIdMatchRes.csv";
-	public static String ExIdenIDPath = "/home/pq/inspect/intermediateData/comPerDataClass/ExIdenIdMatchRes.csv";
-	public static String VehicleTypePath = "/home/pq/inspect/intermediateData/comPerDataClass/vehicleTypeMatchRes.csv";
+	private static String comPerDataExcNullPath = "/home/pq/inspect/intermediateData/comPerDataExcNull/comPerDataExcNull_2018-08.csv";
+	private static String comPerDataClassPath = "/home/pq/inspect/intermediateData/comPerDataClass/";
 
 	/**
 	 * 对原始出口数据进行处理，初步找出异常数据
 	 */
-	public static void comparePerData() {
+	public static void comparePerData(String inPath, String outPath) {
 
 		Map<String, LinkedList<String>> EnExIDMap      = new HashMap<>();
 		Map<String, LinkedList<String>> ExIdenIDMap    = new HashMap<>();
@@ -35,7 +32,7 @@ public class ComparePerData {
 		
 		// 读文件
 		try {
-			InputStreamReader inStream = new InputStreamReader(new FileInputStream(dataPath), "UTF-8");
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(inPath), "UTF-8");
 			BufferedReader reader = new BufferedReader(inStream);
 
 			String line = "";
@@ -80,12 +77,14 @@ public class ComparePerData {
 
 					// 出口实际收费车牌情况判断
 					if (exVehId.equals("null") || exVehId.length() < 9 || exVehId.substring(2, 7).equals("00000") || 
+							exVehId.substring(2, 7).equals("12345") || exVehId.substring(0, 2).equals("苏W") ||
 							!regularExpression.isLetterDigitOrChinese(exVehId.substring(0, 7))) { 
 						continue;
 					}
 					
 					// 入口实际收费车牌，出口实际收费车牌
 					if (!enVehId.equals("null") && enVehId.length() > 8 && !enVehId.substring(2, 7).equals("00000") && 
+							!enVehId.substring(2, 7).equals("12345") && !enVehId.substring(0, 2).equals("苏W") &&
 							regularExpression.isLetterDigitOrChinese(enVehId.substring(0, 7))) {
 						// 排除 NULL 默认车牌
 						
@@ -108,6 +107,7 @@ public class ComparePerData {
 
 					// 出口实际收费车牌，出口识别收费车牌
 					if (!idenVehId.equals("null") && idenVehId.length() > 8 && !idenVehId.substring(2, 7).equals("00000") && 
+							!idenVehId.substring(2, 7).equals("12345") && !idenVehId.substring(0, 2).equals("苏W") &&
 							regularExpression.isLetterDigitOrChinese(idenVehId.substring(0, 7))) {
 						// 排除 NULL 默认车牌
 						
@@ -133,16 +133,23 @@ public class ComparePerData {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(dataPath + " read finish!");
+		System.out.println(inPath + " read finish!");
 
 		System.out.println("入口收费车牌 != 出口收费车牌 数量： " + EnExNumber);
 		System.out.println("出口收费车牌 != 出口识别车牌 数量： " + ExIdenNumber);
 		System.out.println("入口收费车型 != 出口收费车型 数量： " + VehicleTypeNumber);
 		
 		// 写数据
+		
+		String EnExIDPath = outPath + "EnExIdMatchRes.csv";
+		String ExIdenIDPath = outPath + "ExIdenIdMatchRes.csv";
+		String VehicleTypePath = outPath + "vehicleTypeMatchRes.csv";
+		
 		writeData(EnExIDPath, EnExIDMap);
 		writeData(ExIdenIDPath, ExIdenIDMap);
 		writeData(VehicleTypePath, VehicleTypeMap);
+		
+		System.out.println("******************单条数据比对完毕*************");
 	}
 
 	public static void writeData(String outPath, Map<String, LinkedList<String>> dataMap) {
@@ -170,6 +177,6 @@ public class ComparePerData {
 	}
 
 	public static void main(String[] args) {
-		comparePerData();
+		comparePerData(comPerDataExcNullPath, comPerDataClassPath);
 	}
 }

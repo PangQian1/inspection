@@ -12,18 +12,18 @@ import java.util.Map;
 
 public class SpiltProvince {
 
-	public static String DataPath   = "/home/pq/inspect/intermediateData/comMulData/exVehTypeMulRes.csv";
-	public static String ResultPath = "/home/pq/inspect/intermediateData/comMulData/分省.csv";
+	private static String exVehTypeMulPath   = "/home/pq/inspect/intermediateData/comMulData/exVehTypeMulRes.csv";
+	private static String splitProPath = "/home/pq/inspect/intermediateData/comMulData/分省.csv";
 
 	/**
 	 * 对原始出口数据进行处理，初步找出异常数据
 	 */
-	public static void preProcess() {
+	public static void splitPro(String inPath, String outPath) {
 		Map<String, LinkedList<String>> ProvinceMap = new HashMap<>();
 
 		// 读文件
 		try {
-			InputStreamReader inStream = new InputStreamReader(new FileInputStream(DataPath), "UTF-8");
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(inPath), "UTF-8");
 			BufferedReader reader = new BufferedReader(inStream);
 
 			String line = "";
@@ -57,10 +57,12 @@ public class SpiltProvince {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println(DataPath + " read finish!");
+		System.out.println(inPath + " read finish!");
 
 		// 写数据
-		writeData(ResultPath, ProvinceMap);
+		writeData(outPath, ProvinceMap);
+		
+		System.out.println("*************分省结束**********");
 	}
 
 	public static void writeData(String outPath, Map<String, LinkedList<String>> dataMap) {
@@ -163,6 +165,6 @@ public class SpiltProvince {
 	}
 
 	public static void main(String[] args) {
-		preProcess();
+		splitPro(exVehTypeMulPath, splitProPath);
 	}
 }

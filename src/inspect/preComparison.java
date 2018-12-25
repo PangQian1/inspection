@@ -335,7 +335,7 @@ public class preComparison {
 		count(preProExData);
 		//count(prefiltExData);
 		
-		System.out.println("end");
+		System.out.println("**********Ô¤´¦Àí½áÊø**************");
 	}
 
 }

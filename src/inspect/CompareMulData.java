@@ -14,12 +14,10 @@ import dao.regularExpression;
 
 public class CompareMulData {
 	
-	public static String dataPath = "/home/pq/inspect/intermediateData/sumDataBySever";
-
-	public static String exVehTypeMulPath = "/home/pq/inspect/intermediateData/comMulData/exVehTypeMulRes.csv";
-	public static String exVehIdMulPath = "/home/pq/inspect/intermediateData/comMulData/exVehIdMulRes.csv";
+	private static String sumDataPath = "/home/pq/inspect/intermediateData/sumDataBySever";
+	private static String comMulDataPath = "/home/pq/inspect/intermediateData/comMulData/";
 	
-	public static void compareMulData(String path) {
+	public static void compareMulData(String path, String outPath) {
 
 		File file = new File(path);
 		List<String> list = Arrays.asList(file.list());
@@ -94,12 +92,14 @@ public class CompareMulData {
 						
 						//比对出口实际车牌不一致情况
 						if(!exIdFlag && exVehId.length()==9 && !exVehId.substring(2, 7).equals("00000") &&
+								!exVehId.substring(2, 7).equals("12345") && !exVehId.substring(0, 2).equals("苏W") &&
 								regularExpression.isLetterDigitOrChinese(exVehId.substring(0, 7))){
 							exIdFlag = true;
 							exId = exVehId;
 						}
 						
 						if(exIdFlag && f2 && exVehId.length()==9 && !exVehId.substring(2, 7).equals("00000") && 
+								!exVehId.substring(2, 7).equals("12345") && !exVehId.substring(0, 2).equals("苏W") &&
 								regularExpression.isLetterDigitOrChinese(exVehId.substring(0, 7))){
 							
 							exIdSub = exId.substring(0, 7);
@@ -132,16 +132,22 @@ public class CompareMulData {
 		
 		System.out.println("出口车型不一致情况共找到" + exTypeNum + "张etc卡。");
 		System.out.println("出口实际车牌不一致情况共找到" + exIdNum + "张etc卡。");
+		
+		//写结果
+		String exVehTypeMulPath = outPath + "exVehTypeMulRes.csv";
+		String exVehIdMulPath = outPath + "exVehIdMulRes.csv";
+		
 		ComparePerData.writeData(exVehTypeMulPath, exTypeMap);
 		ComparePerData.writeData(exVehIdMulPath, exIdMap);
+		
+		System.out.println("******************多条数据比对完毕*************");
 	}
-	
 	
 	
 	public static void main(String[] args) {
 		
-		compareMulData(dataPath);
-		System.out.println("end");
+		compareMulData(sumDataPath, comMulDataPath);
+		
 	}
 
 }
