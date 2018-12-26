@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+import javax.management.timer.TimerMBean;
 import javax.swing.text.TabableView;
 
 import dao.io;
@@ -23,7 +24,8 @@ public class test {
 	public static void main(String[] args) {
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
-		String time = "2018-01-01T11:01:26";
+		String time = "2018-01-01T11:03:56";
+		System.out.println(time.length());
 		String statusChangeTime = time.substring(0, 10) + " " + time.substring(11);
 		System.out.println(statusChangeTime);
 	
@@ -31,7 +33,7 @@ public class test {
 		try {
 			Date t2 = sdf.parse(statusChangeTime);
 			Date t3 = sdf.parse(t1);
-			System.out.println(t2.after(t3));
+			System.out.println(t2.before(t3));
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Temp {
+public class MergeUserData {
 	
 	private static String cardPath = "/home/pq/inspect/registrationInfo/card";
 	private static String vehiclePath = "H:/pangqian/vehicle";

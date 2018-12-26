@@ -23,15 +23,17 @@ import inspect.ComparePerData;
 
 public class RegistrationInfoPro {
 	
-	/*private static String cardPath = "/home/pq/inspect/registrationInfo/card";
+	private static String cardPath = "/home/pq/inspect/registrationInfo/card";
 	private static String vehiclePath = "/home/pq/inspect/registrationInfo/vehicle";
 	
-	private static String userInfoPath = "/home/pq/inspect/registrationInfo/userInfo.csv";*/
+	private static String userInfoPath = "/home/pq/inspect/registrationInfo/userInfo.csv";
 	
-	private static String cardPath = "H:/pangqian/card";
+/*	private static String cardPath = "H:/pangqian/card";
 	private static String vehiclePath = "H:/pangqian/vehicle";
 	
-	private static String userInfoPath = "H:/pangqian/userInfo.csv";
+	private static String userInfoPath = "H:/pangqian/userInfo.csv";*/
+	
+	private static String userInfoResPath = "H:/pangqian/userInfo.csv";
 	
 	public static void regisInfoPro(String cardPath, String vehPath, String outPath){
 
@@ -60,7 +62,9 @@ public class RegistrationInfoPro {
 					String time = data[13];// 用户卡状态变更时间
 					String op = data[14];// 操作：1.新增 2.变更 3.删除
 					
+					if(time.length() != 19)continue;
 					String staChTime = time.substring(0, 10) + " " + time.substring(11);
+					
 					
 					if (userInfoMap.containsKey(vehId)) {
 					
@@ -70,11 +74,11 @@ public class RegistrationInfoPro {
 						Date currTimeS = sdf.parse(currTime);
 						Date staChTimeS = sdf.parse(staChTime);
 						
-						if(currTimeS.before(staChTimeS)){
+						if(!currTimeS.after(staChTimeS)){
 							
 							if(Integer.parseInt(op) == 3){
 								userInfoMap.remove(vehId);
-								break;
+								continue;
 							}
 							
 							userList.set(0, cardId);
@@ -82,8 +86,10 @@ public class RegistrationInfoPro {
 							userInfoMap.put(vehId, userList);
 						}
 						
-					}else {			
-						if(Integer.parseInt(op) != 3){
+					}else {		
+						
+						if(Integer.parseInt(op) < 3){
+							
 							ArrayList<String> userList = new ArrayList<>();
 							userList.add(cardId);
 							userList.add(staChTime);
@@ -98,7 +104,7 @@ public class RegistrationInfoPro {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println(pathIn + " read finish!");
+			//System.out.println(pathIn + " read finish!");
 		}
 		
 		//读车辆信息
@@ -135,7 +141,7 @@ public class RegistrationInfoPro {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println(pathIn + " read finish!");
+			//System.out.println(pathIn + " read finish!");
 		}
 		
 		System.out.println("共找到" + userInfoMap.size() + "张etc卡。");
@@ -169,10 +175,35 @@ public class RegistrationInfoPro {
 		}
 	}
 	
+	public static void countType(String inPath) {
+		try {
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(inPath), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+
+			String line = "";
+			String[] data;
+			int count = 0;
+			
+			while ((line = reader.readLine()) != null) {
+				data = line.split(",", 3);
+				if(!data[2].equals("null")){
+					count++;
+				}
+				
+			}
+			reader.close();
+			
+			System.out.println("共有" + count + "张卡号找到对应车型");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 	public static void main(String[] args) {
 		
-		regisInfoPro(cardPath, vehiclePath, userInfoPath);
+		//regisInfoPro(cardPath, vehiclePath, userInfoPath);
+		countType(userInfoResPath);
 	}
 
 }
