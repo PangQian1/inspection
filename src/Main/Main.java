@@ -10,15 +10,15 @@ public class Main {
 	private static String sumDataPath = "/home/pq/inspect/intermediateData/sumDataBySever";
 	private static String comMulDataPath = "/home/pq/inspect/intermediateData/comMulData/";
 	
-	private static String exVehTypeMulPath   = "/home/pq/inspect/intermediateData/comMulData/exVehTypeMulRes.csv";
+	private static String matchResPath = "/home/pq/inspect/resData/exTypeMatchUserRes.csv";
 	private static String splitProPath = "/home/pq/inspect/intermediateData/comMulData/分省.csv";
 	
 	public static void main(String[] args) {
 		
-		ComparePerData.comparePerData(comPerDataExcNullPath, comPerDataClassPath);
-		CompareMulData.compareMulData(sumDataPath, comMulDataPath);
+		ComparePerData.comparePerData(comPerDataExcNullPath, comPerDataClassPath);//单条数据比对
+		CompareMulData.compareMulData(sumDataPath, comMulDataPath);//多条数据比对
 
-		SpiltProvince.splitPro(exVehTypeMulPath, splitProPath);
+		SpiltProvince.splitPro(matchResPath, splitProPath);//划分省份
 	}
 
 }

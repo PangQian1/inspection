@@ -32,8 +32,8 @@ public class SpiltProvince {
 				lineArray = line.split("\\|");
 				for (String item : lineArray) {
 					String[] data  = item.split(",");
-					String cardId  = data[1];// 用户卡编号
-					String exVehId = data[5];// 出口实际收费车牌号码
+					String cardId  = data[0];// 用户卡编号
+					String exVehId = data[1];// 出口实际收费车牌号码
 					String provinceShort = exVehId.substring(0, 1);
 					
 					String province = getProvinceName(provinceShort);
