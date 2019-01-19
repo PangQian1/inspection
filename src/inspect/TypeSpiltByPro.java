@@ -20,7 +20,7 @@ public class TypeSpiltByPro {
 	private static String splitProPath = "H:/pangqian/res/splitByPro/";*/
 
 	/**
-	 * 对原始出口数据进行处理，初步找出异常数据
+	 * 对结果文件进行省份划分处理
 	 */
 	public static void splitPro(String inPath, String outPath) {
 		Map<String, ArrayList<String>> ProvinceMap = new HashMap<>();

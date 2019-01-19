@@ -14,16 +14,16 @@ public class Main {
 	private static String exVehTypeMulPath = "/home/pq/inspect/intermediateData/comMulData/exVehTypeMulRes.csv";
 	
 	private static String matchResPath = "/home/pq/inspect/resData/exTypeMatchUserRes.csv";
-	private static String splitProPath = "/home/pq/inspect/intermediateData/comMulData/分省.csv";
+	private static String splitProPath = "/home/pq/inspect/resData/splitByPro/";
 	
 	public static void main(String[] args) {
 		
 		//ComparePerData.comparePerData(comPerDataExcNullPath, comPerDataClassPath);//单条数据比对
 		CompareMulData.compareMulData(sumDataPath, comMulDataPath);//多条数据比对
 		
-		InspectByType.typeMatchUser(userInfoPath, exVehTypeMulPath, matchResPath);
+		InspectByType.typeMatchUser(userInfoPath, exVehTypeMulPath, matchResPath);//比对注册信息找出车型不一致车辆交易
 
-		SpiltProvince.splitPro(matchResPath, splitProPath);//划分省份
+		TypeSpiltByPro.splitPro(matchResPath, splitProPath);//划分省份
 	}
 
 }

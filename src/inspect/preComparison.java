@@ -33,12 +33,12 @@ public class preComparison {
 	
 	
 	/**
-	 * 对原始出口数据进行处理，初步找出异常数据
+	 * 对原始出口数据进行处理，初步找出异常数据--找到客车etc交易部分信息,同一用户id的信息放到同一行中，处理多个月份数据
 	 * 
 	 * @param path
 	 *            原始出口数据路径
 	 * @param out
-	 *            处理结果存放位置--找到客车etc交易部分信息
+	 *            处理结果存放位置
 	 */
 	public static void preProcess(String path, String out) {
 		
@@ -133,12 +133,12 @@ public class preComparison {
 	
 	
 	/**
-	 * 对原始出口数据进行处理，初步找出异常数据
+	 * 对原始出口数据进行处理，初步找出异常数据--找到客车etc交易部分信息,同一用户id的信息放到同一行中，处理一个月份（8月份）数据
 	 * 
 	 * @param path
 	 *            原始出口数据路径
 	 * @param out
-	 *            处理结果存放位置--找到客车etc交易部分信息
+	 *            处理结果存放位置
 	 */
 	public static void preProcess08(String path, String out) {
 
@@ -431,11 +431,11 @@ public class preComparison {
 
 	public static void main(String[] args) {
 
-		preProcess(oriExData, preProExData);
+		//preProcess(oriExData, preProExData);
 		//preFilter(preProExData, prefiltExData);
 		//preFilterExcNull(prefiltExData, prefiltExDataExcNull);
 		
-		//count(preProExData);
+		count(preProExData);
 		//count(prefiltExData);
 		
 		System.out.println("**********预处理结束**************");
