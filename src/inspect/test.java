@@ -1,5 +1,6 @@
 package inspect;
 
+import java.awt.List;
 import java.io.BufferedWriter;
 import java.sql.DatabaseMetaData;
 import java.util.Date;
@@ -22,21 +23,16 @@ public class test {
 		 }
 	
 	public static void main(String[] args) {
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		String time = "2018-01-01T11:03:56";
-		System.out.println(time.length());
-		String statusChangeTime = time.substring(0, 10) + " " + time.substring(11);
-		System.out.println(statusChangeTime);
-	
-		String t1 = "2018-01-01 11:03:56";
-		try {
-			Date t2 = sdf.parse(statusChangeTime);
-			Date t3 = sdf.parse(t1);
-			System.out.println(t2.before(t3));
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
+		Map<String,String> a = new HashMap();
+		a.put("2018-04", "1");
+		a.put("2018-05", "1");
+		a.put("2018-06", "1");
+		a.put("2018-07", "1");
+		a.put("2018-08", "1");
+		
+		System.out.println(time.substring(0, 7));
 	}
 
 }
