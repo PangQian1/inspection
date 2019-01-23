@@ -29,6 +29,143 @@ public class InspectByType {
 	private static String exVehTypeMulPath = "H:/pangqian/exVehTypeMulRes.csv";
 	private static String matchResPath = "H:/pangqian/res/exTypeMatchUserRes.csv";
 	
+	public static void typeMatchUserByLane(String userPath, String typePath, String lanePath, String outPath) {
+
+		File userFile = new File(userPath);
+		File typeFile = new File(typePath);
+		File laneFile = new File(lanePath);
+		Map<String, String> matchResMap = new HashMap<>();
+		Map<String, ArrayList<String>> userInfoMap = new HashMap<>();
+		Map<String, String> laneTypeMap = new HashMap<>();
+		
+		try {		
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(userFile), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+			
+			String line = "";
+			String[] data;
+			
+			while ((line = reader.readLine()) != null) {
+				data = line.split(",");
+				
+				String cardId = data[0];// 用户卡编号
+				String exId = data[1];// 注册车牌
+				String exType = data[2];// 注册车型
+				
+				if(!exType.equals("null")){
+					ArrayList<String> userList = new ArrayList<>();
+					userList.add(exId);
+					userList.add(exType);
+					userInfoMap.put(cardId, userList);
+				}
+			}
+			reader.close();
+			
+			System.out.println(userPath + " read finish!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {		
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(laneFile), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+			
+			String line = "";
+			String[] data;
+			
+			while ((line = reader.readLine()) != null) {
+				data = line.split(",");
+				
+				String laneId = data[0];// 车道编号
+				String laneType = data[1];// 车道类型
+				
+				laneTypeMap.put(laneId, laneType);
+			}
+			reader.close();
+			
+			System.out.println(lanePath + " read finish!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {			
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(typeFile), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+			
+			String line = "";
+			String[] data;
+			
+			while ((line = reader.readLine()) != null) {
+				//针对每个id进行判断
+				data = line.split("\\|");
+				
+				int countT = 0;
+				int countF = 0;
+				int type = 100;
+				
+				String str = "";
+				
+				for(int j=0; j<data.length; j++){
+					String[] trace = data[j].split(",", 10);
+					
+					String laneId = trace[0].substring(0, 21);//车道号
+					String cardId = trace[1];// 用户卡编号
+					//String exVehId = trace[5];// 出口实际收费车牌号码
+					String exVehType = trace[8];// 出口收费车型				
+
+					if (!exVehType.equals("null") && userInfoMap.containsKey(cardId)) {
+						
+						ArrayList<String> list = userInfoMap.get(cardId);
+						String vehId = list.get(0);//注册车牌
+						int r_type = Integer.parseInt(list.get(1));//注册车型
+						int a_type = Integer.parseInt(exVehType);//实际车型
+						
+						if(a_type == r_type){//注册车型和实际车型一致的情况
+							countT++;
+							if(!laneTypeMap.containsKey(laneId) || laneTypeMap.get(laneId).equals("MTC")){
+								break;
+							}
+						}
+						
+						if(a_type > r_type){
+							if(type == 100) type = a_type;
+							if(type != a_type) break;
+							countF++;
+							if(!laneTypeMap.containsKey(laneId) || laneTypeMap.get(laneId).equals("ETC")){
+								break;
+							}
+						}
+						
+						trace[8] += "(" + laneTypeMap.get(laneId) + ")";
+						str += "|";
+						for(int m=0; m<trace.length; m++){
+							if(m != (trace.length-1)) str += trace[m] + ",";
+							else str += trace[m];
+						}
+						
+						if((j == data.length-1) && countF>0 && countT>0){
+							matchResMap.put(cardId, cardId + "," + vehId + "," + r_type + str);
+						}			
+					}
+					
+				}
+			}
+			
+			System.out.println(typePath + " read finish!");
+			reader.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}	
+		
+		System.out.println("共找到" + matchResMap.size() + "条数据。");
+		
+		//写结果
+		writeData(outPath, matchResMap);
+
+		System.out.println("**************基于用户数据车型稽查完毕*************");
+	}
+	
+	
 	public static void typeMatchUser(String userPath, String typePath, String outPath) {
 
 		File userFile = new File(userPath);
@@ -122,7 +259,6 @@ public class InspectByType {
 
 		System.out.println("**************基于用户数据车型稽查完毕*************");
 	}
-	
 	
 	public static void writeData(String outPath, Map<String, String> dataMap) {
 		// 写文件

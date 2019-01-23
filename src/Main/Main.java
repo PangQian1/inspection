@@ -12,18 +12,23 @@ public class Main {
 	
 	private static String userInfoPath = "/home/pq/inspect/registrationInfo/userInfo.csv";
 	private static String exVehTypeMulPath = "/home/pq/inspect/intermediateData/comMulData/exVehTypeMulRes.csv";
+	private static String laneTypePath = "/home/pq/inspect/lanetype.csv";
 	
 	private static String matchResPath = "/home/pq/inspect/resData/exTypeMatchUserRes.csv";
 	private static String splitProPath = "/home/pq/inspect/resData/splitByPro/";
 	
+	private static String matchResByLanePath = "/home/pq/inspect/resData/exTypeMatchUserByLaneRes.csv";
+	private static String splitProByLanePath = "/home/pq/inspect/resData/splitByProByLane/";
+	
 	public static void main(String[] args) {
 		
 		//ComparePerData.comparePerData(comPerDataExcNullPath, comPerDataClassPath);//单条数据比对
-		CompareMulData.compareMulData(sumDataPath, comMulDataPath);//多条数据比对
+		//CompareMulData.compareMulData(sumDataPath, comMulDataPath);//多条数据比对
 		
-		InspectByType.typeMatchUser(userInfoPath, exVehTypeMulPath, matchResPath);//比对注册信息找出车型不一致车辆交易
+		//InspectByType.typeMatchUser(userInfoPath, exVehTypeMulPath, matchResPath);//比对注册信息找出车型不一致车辆交易
+		InspectByType.typeMatchUserByLane(userInfoPath, exVehTypeMulPath, laneTypePath, matchResByLanePath);//比对注册信息找出车型不一致车辆交易(加上车道类型比对)
 
-		TypeSpiltByPro.splitPro(matchResPath, splitProPath);//划分省份
+		TypeSpiltByPro.splitPro(matchResByLanePath, splitProByLanePath);//划分省份
 	}
 
 }
