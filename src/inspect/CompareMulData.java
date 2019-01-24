@@ -1,9 +1,13 @@
 package inspect;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,12 +15,16 @@ import java.util.List;
 import java.util.Map;
 import dao.textSimilar;
 import dao.regularExpression;
+import divideByReleaser.DividedByCardId;
+import inspect.InspectByType;
 
 public class CompareMulData {
 	
 	private static String sumDataPath = "/home/pq/inspect/intermediateData/sumDataBySever";
 	private static String comMulDataPath = "/home/pq/inspect/intermediateData/comMulData/";
 	
+	private static String userInfoPath = "/home/pq/inspect/registrationInfo/userInfo.csv";
+	private static String typeNotConsistSumAllPath = "/home/pq/inspect/resData/typeNotConsistSummaryAll.csv";
 	
 	/**
 	 * 対预处理文件进一步分析，找到每一用户ID对应有不同出口车型以及出口车牌的车辆记录，分别放入不同结果文件
@@ -66,11 +74,19 @@ public class CompareMulData {
 							String enVehType = trace[7];// 入口收费车型
 							String exVehType = trace[8];// 出口收费车型
 							
-							if(enVehType.length()>4 || exVehType.length()>4){
+						/*	if(enVehType.length()>4 || exVehType.length()>4){
 								break;
 							}
 							
 							if((!enVehType.equals("null") && Integer.valueOf(enVehType) > 4) || (!exVehType.equals("null") && Integer.valueOf(exVehType) > 4)){
+								break;
+							}*/
+							
+							if(exVehType.length()>4){
+								continue;
+							}
+							
+							if(!exVehType.equals("null") && Integer.valueOf(exVehType) > 4){
 								break;
 							}
 							
@@ -151,10 +167,255 @@ public class CompareMulData {
 		System.out.println("******************多条数据比对完毕*************");
 	}
 	
+	public static void generateSummaryTabAll(String sumDataPath, String userInfoPath, String outPath){
+		
+		File file = new File(sumDataPath);
+		List<String> list = Arrays.asList(file.list());
+
+		File userInfoFile = new File(userInfoPath);
+		
+		Map<String, ArrayList<String>> userInfoMap = new HashMap<>();
+		Map<String, ArrayList<String>> summaryTalMap = new HashMap<>();
+		
+		try {		
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(userInfoFile), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+			
+			String line = "";
+			String[] data;
+			
+			while ((line = reader.readLine()) != null) {
+				data = line.split(",");
+				
+				String cardId = data[0];// 用户卡编号
+				String exId = data[1];// 注册车牌
+				String exType = data[2];// 注册车型
+				
+				if(!exType.equals("null")){
+					ArrayList<String> userList = new ArrayList<>();
+					userList.add(exId);
+					userList.add(exType);
+					userInfoMap.put(cardId, userList);
+				}
+			}
+			reader.close();
+			
+			System.out.println(userInfoPath + " read finish!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+
+		for (int i = 0; i < list.size(); i++) {
+			// 依次处理每一个文件
+			String pathIn = sumDataPath + "/" + list.get(i);
+			
+			try {
+				InputStreamReader inStream = new InputStreamReader(new FileInputStream(pathIn), "UTF-8");
+				BufferedReader reader = new BufferedReader(inStream);
+				
+				String line = "";
+				String[] data;
+				
+				while ((line = reader.readLine()) != null) {
+					//针对每个id进行判断
+					data = line.split("\\|");
+					
+					for(int j=0; j<data.length; j++){
+						String[] trace = data[j].split(",", 10);
+	
+						String cardId = trace[1];// 用户卡编号
+						String exVehType = trace[8];// 出口收费车型	
+						
+						if(userInfoMap.containsKey(cardId)){
+	
+							if (!exVehType.equals("null")) {
+								
+								ArrayList<String> info = userInfoMap.get(cardId);
+								String vehId = info.get(0);//注册车牌
+								int r_type = Integer.parseInt(info.get(1));//注册车型
+								int a_type = Integer.parseInt(exVehType);//实际车型
+								
+								String proNum = cardId.substring(0, 2);
+								String proName = DividedByCardId.getCardIdRealeaser(proNum);
+								
+								if(summaryTalMap.containsKey(cardId)){
+									ArrayList<String> content = summaryTalMap.get(cardId);
+
+									if(a_type == r_type){//注册车型和实际车型一致的情况
+										int c = Integer.parseInt(content.get(4));
+										c++;
+										content.set(4, c + "");
+									}else{
+										int c = Integer.parseInt(content.get(5));
+										c++;
+										content.set(5, c + "");
+									}
+									
+									summaryTalMap.put(cardId, content);
+								}else{
+									ArrayList<String> content = new ArrayList<>();
+									content.add(cardId);
+									content.add(vehId);
+									content.add(proName);
+									content.add(r_type + "");
+									
+									if(a_type == r_type){//注册车型和实际车型一致的情况
+										content.add("1");
+										content.add("0");
+									}else{
+										content.add("0");
+										content.add("1");
+									}	
+									summaryTalMap.put(cardId, content);
+								}
+
+							}
+						}else{
+							break;
+						}	
+					}
+				}
+			
+				reader.close();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println(pathIn + "read finish!");
+		}
+		
+		writeTab(outPath, summaryTalMap);
+	}
+	
+	public static void generateSummaryTab(String mulDataPath, String userInfoPath, String outPath){
+		
+		File mulDataFile = new File(mulDataPath);
+		File userInfoFile = new File(userInfoPath);
+		
+		Map<String, ArrayList<String>> userInfoMap = new HashMap<>();
+		Map<String, String> summaryTalMap = new HashMap<>();
+		
+		try {		
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(userInfoFile), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+			
+			String line = "";
+			String[] data;
+			
+			while ((line = reader.readLine()) != null) {
+				data = line.split(",");
+				
+				String cardId = data[0];// 用户卡编号
+				String exId = data[1];// 注册车牌
+				String exType = data[2];// 注册车型
+				
+				if(!exType.equals("null")){
+					ArrayList<String> userList = new ArrayList<>();
+					userList.add(exId);
+					userList.add(exType);
+					userInfoMap.put(cardId, userList);
+				}
+			}
+			reader.close();
+			
+			System.out.println(userInfoPath + " read finish!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		try {		
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(mulDataFile), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+			
+			String line = "";
+			String[] data;
+			
+			while ((line = reader.readLine()) != null) {
+				//针对每个id进行判断
+				data = line.split("\\|");
+				
+				int consistCount = 0;
+				int notConsistCount = 0;
+				String str = "";
+				
+				for(int j=0; j<data.length; j++){
+					String[] trace = data[j].split(",", 10);
+
+					String cardId = trace[1];// 用户卡编号
+					String exVehType = trace[8];// 出口收费车型	
+					
+					if(userInfoMap.containsKey(cardId)){
+
+						if (!exVehType.equals("null")) {
+							
+							ArrayList<String> list = userInfoMap.get(cardId);
+							String vehId = list.get(0);//注册车牌
+							int r_type = Integer.parseInt(list.get(1));//注册车型
+							int a_type = Integer.parseInt(exVehType);//实际车型
+							
+							if(a_type == r_type){//注册车型和实际车型一致的情况
+								consistCount++;
+							}else{
+								notConsistCount++;
+							}
+
+							String proNum = cardId.substring(0, 2);
+							String proName = DividedByCardId.getCardIdRealeaser(proNum);
+							
+							if((j == data.length-1)){
+								str = cardId + "," + vehId + "," + proName + "," + r_type + "," + consistCount + "," + notConsistCount;
+								summaryTalMap.put(cardId, str);
+							}			
+						}
+					}else{
+						break;
+					}
+	
+					
+				}
+			}
+			
+			reader.close();
+			
+			InspectByType.writeData(outPath, summaryTalMap);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}	
+	}
+	
+	public static void writeTab(String outPath, Map<String, ArrayList<String>> dataMap) {
+		// 写文件
+		System.out.println(outPath + "  writing !");
+		try {
+			OutputStreamWriter writerStream = new OutputStreamWriter(new FileOutputStream(outPath), "utf-8");
+			BufferedWriter writer = new BufferedWriter(writerStream);
+			for (String cardId : dataMap.keySet()) {
+				ArrayList<String> listTrace = dataMap.get(cardId);
+				if(!listTrace.get(5).equals("0")){
+					for (int j = 0; j < listTrace.size(); j++) {
+						if (j == listTrace.size() - 1) {
+							writer.write(listTrace.get(j));
+							break;
+						}
+						writer.write(listTrace.get(j) + ",");
+					}
+				}else{
+					continue;
+				}
+				writer.write("\n");
+				writer.flush();
+			}
+			writer.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public static void main(String[] args) {
 		
-		compareMulData(sumDataPath, comMulDataPath);
+		//compareMulData(sumDataPath, comMulDataPath);
+		generateSummaryTabAll(sumDataPath, userInfoPath, typeNotConsistSumAllPath);
 		
 	}
 

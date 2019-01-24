@@ -165,7 +165,6 @@ public class InspectByType {
 		System.out.println("**************基于用户数据车型稽查完毕*************");
 	}
 	
-	
 	public static void typeMatchUser(String userPath, String typePath, String outPath) {
 
 		File userFile = new File(userPath);

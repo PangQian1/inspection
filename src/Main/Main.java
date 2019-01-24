@@ -1,5 +1,6 @@
 package Main;
 
+import divideByReleaser.DividedByCardId;
 import inspect.*;
 
 public class Main {
@@ -20,15 +21,19 @@ public class Main {
 	private static String matchResByLanePath = "/home/pq/inspect/resData/exTypeMatchUserByLaneRes.csv";
 	private static String splitProByLanePath = "/home/pq/inspect/resData/splitByProByLane/";
 	
+	private static String typeNotConsistSumPath = "/home/pq/inspect/resData/typeNotConsistSummary.csv";
+	
 	public static void main(String[] args) {
 		
 		//ComparePerData.comparePerData(comPerDataExcNullPath, comPerDataClassPath);//单条数据比对
-		//CompareMulData.compareMulData(sumDataPath, comMulDataPath);//多条数据比对
+		CompareMulData.compareMulData(sumDataPath, comMulDataPath);//多条数据比对
 		
 		//InspectByType.typeMatchUser(userInfoPath, exVehTypeMulPath, matchResPath);//比对注册信息找出车型不一致车辆交易
-		InspectByType.typeMatchUserByLane(userInfoPath, exVehTypeMulPath, laneTypePath, matchResByLanePath);//比对注册信息找出车型不一致车辆交易(加上车道类型比对)
+		//InspectByType.typeMatchUserByLane(userInfoPath, exVehTypeMulPath, laneTypePath, matchResByLanePath);//比对注册信息找出车型不一致车辆交易(加上车道类型比对)
 
-		TypeSpiltByPro.splitPro(matchResByLanePath, splitProByLanePath);//划分省份
+		//TypeSpiltByPro.splitPro(matchResByLanePath, splitProByLanePath);//划分省份
+		
+		//CompareMulData.generateSummaryTab(exVehTypeMulPath, userInfoPath, typeNotConsistSumPath);
 	}
 
 }

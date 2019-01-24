@@ -1,8 +1,13 @@
 package inspect;
 
 import java.awt.List;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.sql.DatabaseMetaData;
+import java.util.ArrayList;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,10 +29,8 @@ public class test {
 	
 	public static void main(String[] args) {
 		
-		String trace = "G000444003041044104002018040215141602,44011520223000364166,980,0000000000000000,‘¡B5T6H3_9,‘¡B5T6H3_0,null,1,1,3|G001544007003040100902018040218160315,44011520223000364166,1764,0000000000000000,‘¡000000_9,‘¡B5T6H3_0,null,1,1,3|G001544007003040100902018040308054141,44011520223000364166,784,0000000000000000,‘¡000000_9,‘¡B5T6H3_0,null,1,1,3|G001544006002020100702018040417310828,44011520223000364166,3822,0000000000000000,‘¡B5T6H3_0,‘¡B5T6H3_0,null,2,2,3|G001544007003040100902018040808192645,44011520223000364166,1274,0000000000000000,‘¡000000_9,‘¡B5T6H3_0,null,1,2,3|S002844001001040100802018040216483492,44011520223000364166,2254,0000000000000000,‘¡000000_9,‘¡B5T6H3_0,null,1,2,3|G001544007005040103102018040418471689,44011520223000364166,1274,0000000000000000,‘¡B5T6H3_0,‘¡B5T6H3_0,null,2,2,3|S002844001001040100702018033108415493,44011520223000364166,980,0000000000000000,‘¡000000_9,‘¡B5T6H3_0,null,1,1,3|G001544006002020100302018040208373926,44011520223000364166,1764,0000000000000000,‘¡000000_9,‘¡B5T6H3_0,null,1,1,3|G000444003029022900302018040316272512,44011520223000364166,12054,0000000000000000,‘¡000000_9,‘¡B5T6H3_0,null,2,2,3";
-				
-				
-				
+/*		String trace = "";
+						
 		String[] data = trace.split("\\|");
 		for(int i=0; i<data.length; i++){
 			System.out.println(data[i]);
@@ -35,7 +38,41 @@ public class test {
 		
 		for(int i=0; i<data.length; i++){
 			System.out.println(data[i].substring(21, 35));
+		}*/
+
+		String userPath = "E:/inspect/≥µ–Õ≤ª“ª÷¬ª„◊‹–≈œ¢/typeNotConsistSummaryAll.csv";
+		
+		File userFile = new File(userPath);
+
+		Map<String, String> matchResMap = new HashMap<>();
+
+		
+		try {		
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(userFile), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+			
+			String line = "";
+			String[] data;
+			
+			while ((line = reader.readLine()) != null) {
+				data = line.split(",");
+				
+				String cardId = data[0];
+				String type = data[3];
+				int t = Integer.parseInt(type);
+				if(t<5){
+					matchResMap.put(cardId, line);
+				}
+			}
+			reader.close();
+			
+			System.out.println(userPath + " read finish!");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
+		
+		InspectByType.writeData("E:/inspect/≥µ–Õ≤ª“ª÷¬ª„◊‹–≈œ¢/typeNotConsist.csv", matchResMap);
 	}
 
 }
