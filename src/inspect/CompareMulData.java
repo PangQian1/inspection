@@ -220,11 +220,14 @@ public class CompareMulData {
 				while ((line = reader.readLine()) != null) {
 					//针对每个id进行判断
 					data = line.split("\\|");
+					//String OBUId_1 = "";
+					//String OBUId_2 = "";
 					
 					for(int j=0; j<data.length; j++){
 						String[] trace = data[j].split(",", 10);
 	
 						String cardId = trace[1];// 用户卡编号
+						String OBUId = trace[3];//OBU编号
 						String exVehType = trace[8];// 出口收费车型	
 						
 						if(userInfoMap.containsKey(cardId)){
@@ -252,10 +255,34 @@ public class CompareMulData {
 										content.set(5, c + "");
 									}
 									
+									if(!OBUId.equals("null") && !OBUId.equals("")){
+										
+										if(content.get(6).equals(OBUId)){
+											int c = Integer.parseInt(content.get(7));
+											c++;
+											content.set(7, c + "");
+										}else if(!content.get(6).equals(OBUId) && content.get(6).equals("")){
+											content.set(6, OBUId);
+											int c = Integer.parseInt(content.get(7));
+											c++;
+											content.set(7, c + "");
+										}else if(content.get(8).equals(OBUId)){
+											int c = Integer.parseInt(content.get(9));
+											c++;
+											content.set(9, c + "");
+										}else if(!content.get(8).equals(OBUId) && content.get(8).equals("")){
+											content.set(8, OBUId);
+											int c = Integer.parseInt(content.get(9));
+											c++;
+											content.set(9, c + "");
+										}
+										
+									}
+											
 									summaryTalMap.put(cardId, content);
 								}else{
 									ArrayList<String> content = new ArrayList<>();
-									content.add(cardId);
+									content.add("'" + cardId);
 									content.add(vehId);
 									content.add(proName);
 									content.add(r_type + "");
@@ -267,6 +294,18 @@ public class CompareMulData {
 										content.add("0");
 										content.add("1");
 									}	
+									
+									if(OBUId.equals("null") || OBUId.equals("")){
+										content.add("");
+										content.add("0");
+										content.add("");
+										content.add("0");
+									}else{
+										content.add(OBUId);
+										content.add("1");
+										content.add("");
+										content.add("0");
+									}
 									summaryTalMap.put(cardId, content);
 								}
 
