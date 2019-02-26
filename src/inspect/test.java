@@ -40,7 +40,7 @@ public class test {
 			System.out.println(data[i].substring(21, 35));
 		}*/
 
-		String userPath = "E:/inspect/车型不一致汇总信息/typeNotConsistSummaryAll.csv";
+/*		String userPath = "E:/inspect/车型不一致汇总信息/typeNotConsistSummaryAll.csv";
 		
 		File userFile = new File(userPath);
 
@@ -72,7 +72,13 @@ public class test {
 		}
 		
 		
-		InspectByType.writeData("E:/inspect/车型不一致汇总信息/typeNotConsist.csv", matchResMap);
+		InspectByType.writeData("E:/inspect/车型不一致汇总信息/typeNotConsist.csv", matchResMap);*/
+		
+		String aString = "'44011415232100057048,粤ZGX06港_2,广东省,4,4,194,'860300010025DCC4,188,'0000000000000000,4,4型客车,50";
+		
+		System.out.println(aString.indexOf("型"));
+		int a = aString.indexOf("型");
+		System.out.println(aString.substring(a-1,a+3));
 	}
 
 }
