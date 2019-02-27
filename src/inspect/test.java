@@ -74,11 +74,15 @@ public class test {
 		
 		InspectByType.writeData("E:/inspect/车型不一致汇总信息/typeNotConsist.csv", matchResMap);*/
 		
-		String aString = "'44011415232100057048,粤ZGX06港_2,广东省,4,4,194,'860300010025DCC4,188,'0000000000000000,4,4型客车,50";
+		String aString = "'32011650220000063051,苏C32088_1,江苏省,4,309,1,'3201031701067457,301,'0,1,客四,'3201031701067457";
+		String bString = "'32011802220000042426,苏BM7013_0,江苏省,1,0,35,'3E268712,35,,,,0,客二,'3201621802310165";
+	
+		String b[] = bString.split(",");
+		System.out.println(b[8]);
 		
-		System.out.println(aString.indexOf("型"));
-		int a = aString.indexOf("型");
-		System.out.println(aString.substring(a-1,a+3));
+		System.out.println(aString.split(",").length);
+		System.out.println(bString.split(",").length);
+
 	}
 
 }

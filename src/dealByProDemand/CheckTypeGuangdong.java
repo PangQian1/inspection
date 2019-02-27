@@ -18,7 +18,7 @@ import inspect.test;
  *
  */
 
-public class CheckType {	
+public class CheckTypeGuangdong {	
 	
 	public static void main(String[] args) {
 		
