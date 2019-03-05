@@ -6,19 +6,24 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+
+import javax.print.DocFlavor.STRING;
 
 import escapeAuditByType.MatchUserInfo;
 
 public class DividedByCardId {
 	
 	private static String inPath = "I:/稽查/exVehTypeMulRes.csv";
-	private static String outPath = "I:/稽查/由用户卡号划分省份/";
+	private static String outPath = "I:/稽查/根据卡号划分省份/";
+	private static String userInfoPath = "I:/稽查/userInfo.csv";
 	
 	public static void main(String[] args) {
-		//splitProByCardId(inPath, outPath);
+		splitProByCardId(userInfoPath, inPath, outPath);
 	}
 	
 	public static String getCardIdRealeaser(String ProvinceCode) {
@@ -89,7 +94,7 @@ public class DividedByCardId {
 	}
 	
 	/**
-	 * 对结果文件进行省份划分处理
+	 * 对筛选出来的存在多种出口车型的结果文件进行省份划分和匹配用户数据处理
 	 */
 	public static void splitProByCardId(String userInfoPath, String inPath, String outPath) {
 		Map<String, ArrayList<String>> ProvinceMap = new HashMap<>();
@@ -123,20 +128,22 @@ public class DividedByCardId {
 					System.out.println("出现异常省份！！");
 					continue;
 				}
-
+				
+				//对长数字串进行处理，使其可以在Excel中显示
+				String newLine = adaptExcel(line);
 				if (ProvinceMap.containsKey(province)) {
 					ArrayList<String> listTrace = ProvinceMap.get(province);
 					int count = Integer.parseInt(listTrace.get(0));
 					count++;
 					listTrace.set(0, count+"");
 					String info = "," + userInfo.get(0) + "," + userInfo.get(1) + "\\|";
-					listTrace.add(line.replaceAll("\\|", info) + "," + userInfo.get(0) + "," + userInfo.get(1));
+					listTrace.add(newLine.replaceAll("\\|", info) + "," + userInfo.get(0) + "," + userInfo.get(1));
 					ProvinceMap.put(province, listTrace);
 				} else {
 					ArrayList<String> listTrace = new ArrayList<>();
 					listTrace.add("1");
 					String info = "," + userInfo.get(0) + "," + userInfo.get(1) + "\\|";
-					listTrace.add(line.replaceAll("\\|", info) + "," + userInfo.get(0) + "," + userInfo.get(1));
+					listTrace.add(newLine.replaceAll("\\|", info) + "," + userInfo.get(0) + "," + userInfo.get(1));
 					ProvinceMap.put(province, listTrace);
 				}				
 			}
@@ -184,6 +191,33 @@ public class DividedByCardId {
 		}
 	}
 	
-
+	public static String adaptExcel(String line) {
+		String[] data = line.split("\\|");
+		String newLine = "";
+		
+		for(int i = 0; i < data.length; i++) {
+			String record[] = data[i].split(",");
+			record[1] = "'" + record[1];//用户卡ID
+			if(!record[3].equals("null")) {
+				record[3] = "'" + record[3];
+			}
+			
+			for(int j = 0; j < record.length; j++) {
+				if(j == record.length-1) {
+					newLine += record[j];
+					break;
+				}
+				newLine += record[j] + ",";
+			}
+			
+			if(i < data.length-1) {
+				newLine += "|";
+			}
+		}
+		
+		//System.out.println(newLine);
+		return newLine;
+		
+	}
 
 }
