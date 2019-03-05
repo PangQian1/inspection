@@ -10,13 +10,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import escapeAuditByType.MatchUserInfo;
+
 public class DividedByCardId {
 	
 	private static String inPath = "I:/稽查/exVehTypeMulRes.csv";
 	private static String outPath = "I:/稽查/由用户卡号划分省份/";
 	
 	public static void main(String[] args) {
-		splitProByCardId(inPath, outPath);
+		//splitProByCardId(inPath, outPath);
 	}
 	
 	public static String getCardIdRealeaser(String ProvinceCode) {
@@ -89,8 +91,9 @@ public class DividedByCardId {
 	/**
 	 * 对结果文件进行省份划分处理
 	 */
-	public static void splitProByCardId(String inPath, String outPath) {
+	public static void splitProByCardId(String userInfoPath, String inPath, String outPath) {
 		Map<String, ArrayList<String>> ProvinceMap = new HashMap<>();
+		Map<String, ArrayList<String>> userInfoMap = MatchUserInfo.matchUserInfo(userInfoPath);
 
 		// 读文件
 		try {
@@ -105,6 +108,13 @@ public class DividedByCardId {
 				String[] data  = lineArray[0].split(",");
 				String cardId  = data[1];// 用户卡编号
 				String provinceCode = cardId.substring(0, 2);
+				ArrayList<String> userInfo;
+				
+				if(userInfoMap.containsKey(cardId)){
+					userInfo = userInfoMap.get(cardId);
+				}else{
+					continue;
+				}
 				
 				//System.out.println(provinceCode);
 				String province = getCardIdRealeaser(provinceCode);
@@ -119,12 +129,14 @@ public class DividedByCardId {
 					int count = Integer.parseInt(listTrace.get(0));
 					count++;
 					listTrace.set(0, count+"");
-					listTrace.add(line);
+					String info = "," + userInfo.get(0) + "," + userInfo.get(1) + "\\|";
+					listTrace.add(line.replaceAll("\\|", info) + "," + userInfo.get(0) + "," + userInfo.get(1));
 					ProvinceMap.put(province, listTrace);
 				} else {
 					ArrayList<String> listTrace = new ArrayList<>();
 					listTrace.add("1");
-					listTrace.add(line);
+					String info = "," + userInfo.get(0) + "," + userInfo.get(1) + "\\|";
+					listTrace.add(line.replaceAll("\\|", info) + "," + userInfo.get(0) + "," + userInfo.get(1));
 					ProvinceMap.put(province, listTrace);
 				}				
 			}

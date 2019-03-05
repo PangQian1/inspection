@@ -38,7 +38,7 @@ public class Main {
 		
 		//CompareMulData.generateSummaryTab(exVehTypeMulPath, userInfoPath, typeNotConsistSumPath);
 		
-		DividedByCardId.splitProByCardId(exVehTypeMulPath, dividedByCardIdPath);
+		DividedByCardId.splitProByCardId(userInfoPath, exVehTypeMulPath, dividedByCardIdPath);
 	}
 
 }

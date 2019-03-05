@@ -22,7 +22,45 @@ public class MatchUserInfo {
 	private static String originPath = "/home/pq/inspect/resData/dividedByCardId/origin";
 	private static String matchUserInfoPath = "/home/pq/inspect/resData/dividedByCardId/matchUserInfo";
 	
-	public static void matchUserInfo(String userInfoPath,String originPath, String matchUserInfoPath) {
+	public static Map<String, ArrayList<String>> matchUserInfo(String userInfoPath) {
+
+		File userInfoFile = new File(userInfoPath);
+		
+		Map<String, ArrayList<String>> userInfoMap = new HashMap<>();
+		
+		try {		
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(userInfoFile), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
+			
+			String line = "";
+			String[] data;
+			
+			while ((line = reader.readLine()) != null) {
+				data = line.split(",");
+				
+				String cardId = data[0];// ÓÃ»§¿¨±àºÅ
+				String exId = data[1];// ×¢²á³µÅÆ
+				String exType = data[2];// ×¢²á³µÐÍ
+				
+				if(!exType.equals("null")){
+					ArrayList<String> userList = new ArrayList<>();
+					userList.add(exId);
+					userList.add(exType);
+					userInfoMap.put(cardId, userList);
+				}
+			}
+			reader.close();
+			
+			System.out.println(userInfoPath + " read finish!");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return userInfoMap;
+	}
+	
+	public static void matchUserInfo1(String userInfoPath,String originPath, String matchUserInfoPath) {
 		
 		File file = new File(originPath);
 		List<String> list = Arrays.asList(file.list());
@@ -83,8 +121,14 @@ public class MatchUserInfo {
 				
 					if(userInfoMap.containsKey(cardId)){
 						ArrayList<String> userList = userInfoMap.get(cardId);
-						line += userList.get(0) + "," + userList.get(1);
-						writer.write(line + "\n");
+						line += userList.get(0) + "," + userList.get(1);	
+						
+						if(provinceMap.containsKey(cardId)){
+							ArrayList<String> recordList = provinceMap.get(cardId);
+							
+						}else{
+							
+						}
 					}
 				}
 			
