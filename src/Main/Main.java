@@ -24,10 +24,12 @@ public class Main {
 	
 	private static String typeNotConsistSumPath = "/home/pq/inspect/resData/typeNotConsistSummary.csv";
 	
+	private static String dividedByCardIdPath = "/home/pq/inspect/resData/dividedByCardId/origin/";
+	
 	public static void main(String[] args) {
 		
 		//ComparePerData.comparePerData(comPerDataExcNullPath, comPerDataClassPath);//单条数据比对
-		CompareMulData.compareMulData(sumDataPath, comMulDataPath);//多条数据比对
+		//CompareMulData.compareMulData(sumDataPath, comMulDataPath);//多条数据比对
 		
 		//InspectByType.typeMatchUser(userInfoPath, exVehTypeMulPath, matchResPath);//比对注册信息找出车型不一致车辆交易
 		//InspectByType.typeMatchUserByLane(userInfoPath, exVehTypeMulPath, laneTypePath, matchResByLanePath);//比对注册信息找出车型不一致车辆交易(加上车道类型比对)
@@ -35,6 +37,8 @@ public class Main {
 		//TypeSpiltByPro.splitPro(matchResByLanePath, splitProByLanePath);//划分省份
 		
 		//CompareMulData.generateSummaryTab(exVehTypeMulPath, userInfoPath, typeNotConsistSumPath);
+		
+		DividedByCardId.splitProByCardId(exVehTypeMulPath, dividedByCardIdPath);
 	}
 
 }

@@ -86,9 +86,10 @@ public class CompareMulData {
 								continue;
 							}
 							
-							if(!exVehType.equals("null") && Integer.valueOf(exVehType) > 4){
+							//进一步筛选，若出现大于4型车的情况，则pass掉
+						/*	if(!exVehType.equals("null") && Integer.valueOf(exVehType) > 4){
 								break;
-							}
+							}*/
 							
 							//比对出口车型不一致情况
 							if(!exTypeFlag && !exVehType.equals("null") && !exVehType.equals("0")){

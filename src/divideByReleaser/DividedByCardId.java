@@ -1,6 +1,23 @@
 package divideByReleaser;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class DividedByCardId {
+	
+	private static String inPath = "I:/稽查/exVehTypeMulRes.csv";
+	private static String outPath = "I:/稽查/由用户卡号划分省份/";
+	
+	public static void main(String[] args) {
+		splitProByCardId(inPath, outPath);
+	}
 	
 	public static String getCardIdRealeaser(String ProvinceCode) {
 		switch (ProvinceCode) {
@@ -52,8 +69,6 @@ public class DividedByCardId {
 			return "湖南省";
 		case "44":
 			return "广东省";
-		case "琼":
-			return "海南省";
 		case "51":
 			return "四川省";
 		case "52":
@@ -70,9 +85,93 @@ public class DividedByCardId {
 			return "";
 		}
 	}
+	
+	/**
+	 * 对结果文件进行省份划分处理
+	 */
+	public static void splitProByCardId(String inPath, String outPath) {
+		Map<String, ArrayList<String>> ProvinceMap = new HashMap<>();
 
-	public static void main(String[] args) {
+		// 读文件
+		try {
+			InputStreamReader inStream = new InputStreamReader(new FileInputStream(inPath), "UTF-8");
+			BufferedReader reader = new BufferedReader(inStream);
 
+			String line = "";
+			String[] lineArray;
+			while ((line = reader.readLine()) != null) {
+				lineArray = line.split("\\|");
+
+				String[] data  = lineArray[0].split(",");
+				String cardId  = data[1];// 用户卡编号
+				String provinceCode = cardId.substring(0, 2);
+				
+				//System.out.println(provinceCode);
+				String province = getCardIdRealeaser(provinceCode);
+				
+				if (province.isEmpty()) {
+					System.out.println("出现异常省份！！");
+					continue;
+				}
+
+				if (ProvinceMap.containsKey(province)) {
+					ArrayList<String> listTrace = ProvinceMap.get(province);
+					int count = Integer.parseInt(listTrace.get(0));
+					count++;
+					listTrace.set(0, count+"");
+					listTrace.add(line);
+					ProvinceMap.put(province, listTrace);
+				} else {
+					ArrayList<String> listTrace = new ArrayList<>();
+					listTrace.add("1");
+					listTrace.add(line);
+					ProvinceMap.put(province, listTrace);
+				}				
+			}
+			reader.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(inPath + " read finish!");
+
+		// 写数据
+		writeData(outPath, ProvinceMap);
+		
+		System.out.println("*************分省结束*************");
 	}
+
+	public static void writeData(String outPath, Map<String, ArrayList<String>> dataMap) {
+		// 写文件
+		System.out.println(outPath + "  writing !");
+		int sum = 0;
+		try {		
+			for (String province : dataMap.keySet()) {
+				
+				ArrayList<String> listTrace = dataMap.get(province);
+				String path = outPath + province + "_" + listTrace.get(0) + ".csv";
+				OutputStreamWriter writerStream = new OutputStreamWriter(new FileOutputStream(path), "utf-8");
+				BufferedWriter writer = new BufferedWriter(writerStream);
+			
+				for (int j = 1; j < listTrace.size(); j++) {
+					String[] data = listTrace.get(j).split("\\|");
+					for(int i = 0; i < data.length; i++) {
+						writer.write(data[i]);
+						writer.write("\n");
+					}
+					sum++;
+				}
+			
+				writer.flush();
+				writer.close();
+
+				System.out.println(path + " write end.");
+			}
+			System.out.println("共包括" + sum + "条记录");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+
 
 }
