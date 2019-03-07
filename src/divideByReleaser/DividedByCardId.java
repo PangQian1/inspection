@@ -131,18 +131,19 @@ public class DividedByCardId {
 				
 				//对长数字串进行处理，使其可以在Excel中显示
 				String newLine = adaptExcel(line);
+				//String newLine = line;
 				if (ProvinceMap.containsKey(province)) {
 					ArrayList<String> listTrace = ProvinceMap.get(province);
 					int count = Integer.parseInt(listTrace.get(0));
 					count++;
 					listTrace.set(0, count+"");
-					String info = "," + userInfo.get(0) + "," + userInfo.get(1) + "\\|";
+					String info = "," + userInfo.get(0) + "," + userInfo.get(1) + "|";
 					listTrace.add(newLine.replaceAll("\\|", info) + "," + userInfo.get(0) + "," + userInfo.get(1));
 					ProvinceMap.put(province, listTrace);
 				} else {
 					ArrayList<String> listTrace = new ArrayList<>();
 					listTrace.add("1");
-					String info = "," + userInfo.get(0) + "," + userInfo.get(1) + "\\|";
+					String info = "," + userInfo.get(0) + "," + userInfo.get(1) + "|";
 					listTrace.add(newLine.replaceAll("\\|", info) + "," + userInfo.get(0) + "," + userInfo.get(1));
 					ProvinceMap.put(province, listTrace);
 				}				
@@ -170,6 +171,9 @@ public class DividedByCardId {
 				String path = outPath + province + "_" + listTrace.get(0) + ".csv";
 				OutputStreamWriter writerStream = new OutputStreamWriter(new FileOutputStream(path), "utf-8");
 				BufferedWriter writer = new BufferedWriter(writerStream);
+				
+				writer.write("交易ID,ETC ID,交易金额,OBU ID,"
+						+ "入口实际收费车牌号,出口实际收费车牌号,出口识别车牌号,入口收费车型,出口收费车型,支付类型,发行车牌（国家中心）,发行车型（国家中心）\n");
 			
 				for (int j = 1; j < listTrace.size(); j++) {
 					String[] data = listTrace.get(j).split("\\|");

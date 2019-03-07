@@ -2,6 +2,7 @@ package Main;
 
 //test
 import divideByReleaser.DividedByCardId;
+import escapeAuditByType.FilterAbnormalData;
 import inspect.*;
 
 public class Main {
@@ -38,7 +39,7 @@ public class Main {
 		
 		//CompareMulData.generateSummaryTab(exVehTypeMulPath, userInfoPath, typeNotConsistSumPath);
 		
-		DividedByCardId.splitProByCardId(userInfoPath, exVehTypeMulPath, dividedByCardIdPath);
+		FilterAbnormalData.filterAbnormalData(sumDataPath, userInfoPath, dividedByCardIdPath);
 	}
 
 }

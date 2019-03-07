@@ -20,7 +20,7 @@ public class MatchUserInfo {
 	
 	private static String userInfoPath = "/home/pq/inspect/registrationInfo/userInfo.csv";
 	private static String originPath = "/home/pq/inspect/resData/dividedByCardId/origin";
-	private static String matchUserInfoPath = "/home/pq/inspect/resData/dividedByCardId/matchUserInfo";
+	private static String sumDataPath = "/home/pq/inspect/intermediateData/sumDataBySever";
 	
 	public static Map<String, ArrayList<String>> matchUserInfo(String userInfoPath) {
 
@@ -59,9 +59,7 @@ public class MatchUserInfo {
 		
 		return userInfoMap;
 	}
-	
-	
-	
+
 	public static void main(String[] args) {
 		
 	}
