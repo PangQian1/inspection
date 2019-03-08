@@ -40,9 +40,9 @@ public class AbnormalRecordTab {
 				OutputStreamWriter writerStream2 = new OutputStreamWriter(new FileOutputStream(pathOut2), "utf-8");
 				BufferedWriter writer2 = new BufferedWriter(writerStream2);
 				
-				writer1.write("ETC ID,发行车牌（国家中心）,发行车型（国家中心）,"
+				writer1.write("ETC ID,发行车牌(国家中心),发行车型(国家中心),"
 						+ "交易ID,ETC ID,交易金额,OBU ID,入口实际收费车牌号,出口实际收费车牌号,出口识别车牌号,入口收费车型,出口收费车型,支付类型\n");
-				writer2.write("序号,ETC ID,车牌（国家中心信息）,OBU ID（国家中心信息）,发行车型（国家中心信息）,1型出现次数,2型出现次数,3型出现次数,4型出现次数,其它次数\n");
+				writer2.write("序号,ETC ID,车牌(国家中心信息),发行车型(国家中心信息),OBU ID(国家中心信息),1型出现次数,2型出现次数,3型出现次数,4型出现次数,其它次数\n");
 				
 				String line = "";
 				String[] data;
@@ -84,7 +84,7 @@ public class AbnormalRecordTab {
 						}							
 					}
 					
-					writer2.write(serial_num + "," + data[0] + "," + type_1_num + "," + type_2_num + "," + type_3_num + "," + type_4_num + "," + type_other_num + "\n");
+					writer2.write(serial_num + "," + data[0] + ",," + type_1_num + "," + type_2_num + "," + type_3_num + "," + type_4_num + "," + type_other_num + "\n");
 				}
 			
 				reader.close();
