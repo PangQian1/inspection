@@ -41,7 +41,7 @@ public class CombineProInfoGD {
 			while ((line = reader.readLine()) != null) {
 				data = line.split(",");
 				
-				if(data.length < 3) {
+				if(data.length < 4) {
 					continue;
 				}
 				
